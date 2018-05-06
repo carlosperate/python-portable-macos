@@ -13,7 +13,9 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" = "osx" ]; then sw_vers; fi
 
 install:
-  - brew install openssl
+  - PROJECT_DIR="$PWD"
+  - echo $PROJECT_DIR
+  - HOMEBREW_NO_AUTO_UPDATE=1 brew install openssl
   - OPENSSL_ROOT="$(brew --prefix openssl)"
   - echo $OPENSSL_ROOT
 
@@ -22,8 +24,14 @@ script:
   - wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tgz
   - tar -zxvf Python-3.6.5.tgz
   - cd Python-3.6.5
-  - ./configure MACOSX_DEPLOYMENT_TARGET=10.9 CPPFLAGS="-I$OPENSSL_ROOT/include" LDFLAGS="-L$OPENSSL_ROOT/lib" --prefix=Python-3.6.5-portable
+  - ./configure MACOSX_DEPLOYMENT_TARGET=10.9 CPPFLAGS="-I$OPENSSL_ROOT/include" LDFLAGS="-L$OPENSSL_ROOT/lib" --prefix="$PROJECT_DIR/Python-3.6.5-portable"
   - make altinstall
+  - cd ..
+
+  # Upload it
+  - cd mkdir upload
+  - zip --symlinks -r upload/python-only.zip Python-3.6.5-portable/
+  - curl --upload-file ./upload/python-only.zip https://transfer.sh/python-only.zip
 
   # Check
   - du -sk Python-3.6.5-portable/
@@ -37,7 +45,7 @@ script:
 
   # Compress it
   - cd ../
-  - zip --symlinks -r python-mu.zip Python-3.6.5-portable/
+  - zip --symlinks -r upload/python-mu.zip Python-3.6.5-portable/
 
   # Upload it
-  - curl --upload-file ./python-mu.zip https://transfer.sh/python-mu.zip
+  - curl --upload-file ./upload/python-mu.zip https://transfer.sh/python-mu.zip
