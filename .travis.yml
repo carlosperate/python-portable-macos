@@ -26,14 +26,15 @@ script:
   - cd Python-3.6.5
   - ./configure MACOSX_DEPLOYMENT_TARGET=10.9 CPPFLAGS="-I$OPENSSL_ROOT/include" LDFLAGS="-L$OPENSSL_ROOT/lib" --prefix="$PROJECT_DIR/Python-3.6-portable"
   - make altinstall
-  - cd ..
 
   # Compress and upload it
+  - cd "$PROJECT_DIR"
   - mkdir upload
-  - zip --symlinks -r upload/python3.6-only.zip Python-3.6-portable/
+  - zip --symlinks -r upload/python3.6-only.zip Python-3.6-portable/ 1> /dev/null
   - curl --upload-file ./upload/python3.6-only.zip https://transfer.sh/python3.6-only.zip
 
   # Check
+  - cd "$PROJECT_DIR"
   - du -sk Python-3.6-portable/
   - cd Python-3.6-portable
   - otool -L bin/python3.6
@@ -41,9 +42,10 @@ script:
   - ./bin/python3.6 -m pip --version
 
   # Install Mu
+  - cd "$PROJECT_DIR/Python-3.6-portable"
   - ./bin/python3.6 -m pip install mu-editor
 
   # Compress and upload it
   - cd ../
-  - zip --symlinks -r upload/python-mu.zip Python-3.6-portable/
+  - zip --symlinks -r upload/python-mu.zip Python-3.6-portable/ 1> /dev/null
   - curl --upload-file ./upload/python-mu.zip https://transfer.sh/python-mu.zip
