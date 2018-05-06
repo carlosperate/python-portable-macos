@@ -29,7 +29,7 @@ script:
   - cd ..
 
   # Compress and upload it
-  - cd mkdir upload
+  - mkdir upload
   - zip --symlinks -r upload/python3.6-only.zip Python-3.6-portable/
   - curl --upload-file ./upload/python3.6-only.zip https://transfer.sh/python3.6-only.zip
 
