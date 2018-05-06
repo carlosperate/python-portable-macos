@@ -1,0 +1,43 @@
+# Travis can building for Linux and macOS
+matrix:
+  include:
+    # To maximise compatibility pick earliest image, OS X 10.10 Yosemite
+    - os: osx
+      osx_image: xcode6.4
+      sudo: required
+      language: generic
+
+before_install:
+  # OS and default Python info
+  - uname -a
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then sw_vers; fi
+
+install:
+  - brew install openssl
+  - OPENSSL_ROOT="$(brew --prefix openssl)"
+  - echo $OPENSSL_ROOT
+
+script:
+  # Download and build Python
+  - wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tgz
+  - tar -zxvf Python-3.6.5.tgz
+  - cd Python-3.6.5
+  - ./configure MACOSX_DEPLOYMENT_TARGET=10.9 CPPFLAGS="-I$OPENSSL_ROOT/include" LDFLAGS="-L$OPENSSL_ROOT/lib" --prefix=Python-3.6.5-portable
+  - make altinstall
+
+  # Check
+  - du -sk Python-3.6.5-portable/
+  - cd Python-3.6.5-portable
+  - otool -L bin/python3.6
+  - ./bin/python3.6 -c 'import ssl; print(ssl.OPENSSL_VERSION)'
+  - ./bin/python3.6 -m pip --version
+
+  # Install Mu
+  - ./bin/python3.6 -m pip install mu-editor
+
+  # Compress it
+  - cd ../
+  - zip --symlinks -r python-mu.zip Python-3.6.5-portable/
+
+  # Upload it
+  - curl --upload-file ./python-mu.zip https://transfer.sh/python-mu.zip
