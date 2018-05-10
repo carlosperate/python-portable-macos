@@ -89,13 +89,13 @@ def create_app_bundle(bundle_dir, bundle_name, python_dir):
 
     # Copy test file to the Resources folder
     print('\tAdd a luncher Python file for testing PyQt hello world...')
-    origin_py_file = os.path.join(help_files, 'test.py')
-    destination_py_file = os.path.join(resources_dir, 'test.py')
+    origin_py_file = os.path.join(help_files, 'pyqt_test.py')
+    destination_py_file = os.path.join(resources_dir, 'pyqt_test.py')
     shutil.copyfile(origin_py_file, destination_py_file)
 
     # Copy shell script to the MacOS folder and set it executable
     print('\tAdd internal executable...')
-    origin_sh_file = os.path.join(help_files, 'run_test.sh')
+    origin_sh_file = os.path.join(help_files, 'run.sh')
     destination_sh_file = os.path.join(macos_dir, bundle_name)
     shutil.copyfile(origin_sh_file, destination_sh_file)
     make_executable(destination_sh_file)
@@ -149,7 +149,7 @@ def main(args):
                     zip_path='{}-portable.zip'.format(bundle_name.lower()),
                     zip_as_folder=True)
 
-    print('\nAll done! :)')
+    print('All done! :)')
 
 
 if __name__ == "__main__":
