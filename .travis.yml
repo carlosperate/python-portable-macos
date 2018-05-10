@@ -30,6 +30,7 @@ script:
   - ./bin/python3.6 -m pip --version
 
   # Process Python build (removes unnecessary stuff)
+  - cd "$PROJECT_DIR"
   - python process_python_build.py
 
   # Compress and upload it
@@ -43,6 +44,7 @@ script:
   - ./bin/python3.6 -m pip install mu-editor
 
   # Process Python build again now that Mu and dependencies were added
+  - cd "$PROJECT_DIR"
   - python process_python_build.py
 
   # Compress and upload it
