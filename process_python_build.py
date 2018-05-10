@@ -59,27 +59,26 @@ def remove_file_type_from(file_extension, scan_path):
                 remove_file(file_path)
 
 
-def compress_folder(folder_path, zip_file_path, zip_as_folder=True):
+def compress_folder(folder_path, zip_path, zip_as_folder=True):
     """
     Compresses the folder indicated by folder_path, without the a pa
     """
     folder_path = os.path.abspath(folder_path)
-    zip_file_path = os.path.abspath(zip_file_path)
-    if os.path.isfile(zip_file_path):
-        raise Exception('Destination file {} already exists.'.format(
-                zip_file_path))
+    zip_path = os.path.abspath(zip_path)
+    if os.path.isfile(zip_path):
+        raise Exception('Destination file {} already exists.'.format(zip_path))
 
     old_cwd = os.getcwd()
     parent_path = os.path.dirname(folder_path)
     if zip_as_folder:
         os.chdir(parent_path)
-        zip_folder = os.path.relpath(folder_path, parent_path)
+        path_to_zip = os.path.relpath(folder_path, parent_path)
     else:
         os.chdir(folder_path)
-        zip_folder = '.'
+        path_to_zip = '.'
 
     zip_process = subprocess.Popen(
-            ["zip", "--symlinks", "-r", zip_file_path, zip_folder],
+            ["zip", "--symlinks", "-r", zip_path, path_to_zip],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
     std_out, std_err = zip_process.communicate()
@@ -168,7 +167,7 @@ def main(args):
     remove_pycache_dirs(std_lib_path)
 
     print('\nCompile Python files from "{}"'.format(std_lib_path))
-    compile_pyc_dir(python_exec_path, std_lib_path)
+    compile_pyc_dir(python_exec_path=python_exec_path, src_path=std_lib_path)
 
     print('\nRemove Python source files from "{}"'.format(std_lib_path))
     remove_file_type_from('py', std_lib_path)
