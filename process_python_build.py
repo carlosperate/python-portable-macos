@@ -20,10 +20,13 @@ PYTHON_REMOVE_DIRS = [
     os.path.join('lib', PYTHON_VER, 'test'),
 ]
 
+VERBOSE = False
+
 
 def remove_file(file_to_remove):
     if os.path.isfile(file_to_remove):
-        print('Removing file {}'.format(file_to_remove))
+        if VERBOSE:
+            print('Removing file {}'.format(file_to_remove))
         os.remove(file_to_remove)
     else:
         print('File {} was not found.'.format(file_to_remove))
@@ -35,7 +38,8 @@ def remove_directory(dir_to_remove):
     :param dir_to_remove: Path to folder to remove.
     """
     if os.path.isdir(dir_to_remove):
-        print('Removing directory {}'.format(dir_to_remove))
+        if VERBOSE:
+            print('Removing directory {}'.format(dir_to_remove))
         shutil.rmtree(dir_to_remove)
     else:
         print('Directory {} was not found.'.format(dir_to_remove))
@@ -79,6 +83,8 @@ def compress_folder(folder_path, zip_file_path, zip_as_folder=True):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
     std_out, std_err = zip_process.communicate()
+    if VERBOSE:
+        print(std_out)
     if std_err:
         raise Exception('Error zipping standard library:\n{}'.format(std_err))
 
@@ -122,6 +128,8 @@ def compile_pyc_dir(python_exec_path, src_path):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
     std_out, std_err = py_process.communicate()
+    if VERBOSE:
+        print(std_out)
     if std_err:
         raise Exception('Error using Python compileall:\n{}'.format(std_err))
 
@@ -152,7 +160,9 @@ def main(args):
 
     print('\nRemove unnecessary directories:')
     for dir_ in PYTHON_REMOVE_DIRS:
-        remove_directory(os.path.join(python_path, dir_))
+        full_path = os.path.join(python_path, dir_)
+        print('Removing "{}"'.format(full_path))
+        remove_directory(full_path)
 
     print('\nRemove __pycache__ directories from "{}"'.format(std_lib_path))
     remove_pycache_dirs(std_lib_path)
