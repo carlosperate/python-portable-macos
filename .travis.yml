@@ -21,12 +21,6 @@ script:
   # Download and build Python
   - sh build_python.sh
 
-  # Compress and upload it
-  - cd "$PROJECT_DIR"
-  - mkdir upload
-  - zip --symlinks -r upload/python3.6-only.zip Python-portable/ 1> /dev/null
-  - curl --upload-file ./upload/python3.6-only.zip https://transfer.sh/python3.6-only.zip
-
   # Check built Python
   - cd "$PROJECT_DIR"
   - du -sk python-portable/
@@ -35,9 +29,21 @@ script:
   - ./bin/python3.6 -c 'import ssl; print(ssl.OPENSSL_VERSION)'
   - ./bin/python3.6 -m pip --version
 
+  # Process Python build (removes unnecessary stuff)
+  - python process_python_build.py
+
+  # Compress and upload it
+  - cd "$PROJECT_DIR"
+  - mkdir upload
+  - zip --symlinks -r upload/python3.6-only.zip Python-portable/ 1> /dev/null
+  - curl --upload-file ./upload/python3.6-only.zip https://transfer.sh/python3.6-only.zip
+
   # Install Mu
   - cd "$PROJECT_DIR/python-portable"
   - ./bin/python3.6 -m pip install mu-editor
+
+  # Process Python build again now that Mu and dependencies were added
+  - python process_python_build.py
 
   # Compress and upload it
   - cd ../
