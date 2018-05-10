@@ -149,7 +149,7 @@ def main(args):
                     zip_path='{}-portable.zip'.format(bundle_name.lower()),
                     zip_as_folder=True)
 
-    print('All done! :)')
+    print('\nAll done! :)')
 
 
 if __name__ == "__main__":

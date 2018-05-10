@@ -183,7 +183,7 @@ def main(args):
     # print('\nRemove uncompressed stand library dir"{}"'.format(std_lib_path))
     # remove_directory(std_lib_path)
 
-    print('All done! :)')
+    print('\nAll done! :)')
 
 
 if __name__ == "__main__":
