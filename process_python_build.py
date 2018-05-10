@@ -55,6 +55,36 @@ def remove_file_type_from(file_extension, scan_path):
                 remove_file(file_path)
 
 
+def compress_folder(folder_path, zip_file_path, zip_as_folder=True):
+    """
+    Compresses the folder indicated by folder_path, without the a pa
+    """
+    folder_path = os.path.abspath(folder_path)
+    zip_file_path = os.path.abspath(zip_file_path)
+    if os.path.isfile(zip_file_path):
+        raise Exception('Destination file {} already exists.'.format(
+                zip_file_path))
+
+    old_cwd = os.getcwd()
+    parent_path = os.path.dirname(folder_path)
+    if zip_as_folder:
+        os.chdir(parent_path)
+        zip_folder = os.path.relpath(folder_path, parent_path)
+    else:
+        os.chdir(folder_path)
+        zip_folder = '.'
+
+    zip_process = subprocess.Popen(
+            ["zip", "--symlinks", "-r", zip_file_path, zip_folder],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE)
+    std_out, std_err = zip_process.communicate()
+    if std_err:
+        raise Exception('Error zipping standard library:\n{}'.format(std_err))
+
+    os.chdir(old_cwd)
+
+
 def remove_pycache_dirs(scan_path):
     """
     Recursively removes all folders named "__pycache__" from the given path.
@@ -115,36 +145,6 @@ def get_python_path(args):
         raise Exception('No command line argument found')
 
 
-def compress_folder(folder_path, zip_file_path, zip_as_folder=True):
-    """
-    Compresses the folder indicated by folder_path, without the a pa
-    """
-    folder_path = os.path.abspath(folder_path)
-    zip_file_path = os.path.abspath(zip_file_path)
-    if os.path.isfile(zip_file_path):
-        raise Exception('Destination file {} already exists.'.format(
-                zip_file_path))
-
-    old_cwd = os.getcwd()
-    parent_path = os.path.dirname(folder_path)
-    if zip_as_folder:
-        os.chdir(parent_path)
-        zip_folder = os.path.relpath(folder_path, parent_path)
-    else:
-        os.chdir(folder_path)
-        zip_folder = '.'
-
-    zip_process = subprocess.Popen(
-            ["zip", "--symlinks", "-r", zip_file_path, zip_folder],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
-    std_out, std_err = zip_process.communicate()
-    if std_err:
-        raise Exception('Error zipping standard library:\n{}'.format(std_err))
-
-    os.chdir(old_cwd)
-
-
 def main(args):
     python_path = get_python_path(args)
     std_lib_path = os.path.join(python_path, 'lib', PYTHON_VER)
@@ -175,7 +175,6 @@ def main(args):
     # remove_directory(std_lib_path)
 
     print('All done! :)')
-
 
 
 if __name__ == "__main__":
