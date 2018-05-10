@@ -48,6 +48,6 @@ script:
   - python process_python_build.py "$PROJECT_DIR/python-portable"
 
   # Compress and upload it
-  - cd ../
+  - cd "$PROJECT_DIR"
   - zip --symlinks -r upload/mu-portable.zip python-portable/ 1> /dev/null
   - curl --upload-file ./upload/mu-portable.zip https://transfer.sh/mu-portable.zip
