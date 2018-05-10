@@ -14,38 +14,32 @@ before_install:
 
 install:
   - HOMEBREW_NO_AUTO_UPDATE=1 brew install openssl
-  - OPENSSL_ROOT="$(brew --prefix openssl)"
-  - echo $OPENSSL_ROOT
   - PROJECT_DIR="$PWD"
   - echo $PROJECT_DIR
 
 script:
   # Download and build Python
-  - wget https://www.python.org/ftp/python/3.6.5/Python-3.6.5.tgz
-  - tar -zxvf Python-3.6.5.tgz &> /dev/null
-  - cd Python-3.6.5
-  - ./configure MACOSX_DEPLOYMENT_TARGET=10.9 CPPFLAGS="-I$OPENSSL_ROOT/include" LDFLAGS="-L$OPENSSL_ROOT/lib" --prefix="$PROJECT_DIR/Python-3.6-portable"
-  - make altinstall
+  - sh build_python.sh
 
   # Compress and upload it
   - cd "$PROJECT_DIR"
   - mkdir upload
-  - zip --symlinks -r upload/python3.6-only.zip Python-3.6-portable/ 1> /dev/null
+  - zip --symlinks -r upload/python3.6-only.zip Python-portable/ 1> /dev/null
   - curl --upload-file ./upload/python3.6-only.zip https://transfer.sh/python3.6-only.zip
 
-  # Check
+  # Check built Python
   - cd "$PROJECT_DIR"
-  - du -sk Python-3.6-portable/
-  - cd Python-3.6-portable
+  - du -sk python-portable/
+  - cd python-portable
   - otool -L bin/python3.6
   - ./bin/python3.6 -c 'import ssl; print(ssl.OPENSSL_VERSION)'
   - ./bin/python3.6 -m pip --version
 
   # Install Mu
-  - cd "$PROJECT_DIR/Python-3.6-portable"
+  - cd "$PROJECT_DIR/python-portable"
   - ./bin/python3.6 -m pip install mu-editor
 
   # Compress and upload it
   - cd ../
-  - zip --symlinks -r upload/python-mu.zip Python-3.6-portable/ 1> /dev/null
-  - curl --upload-file ./upload/python-mu.zip https://transfer.sh/python-mu.zip
+  - zip --symlinks -r upload/mu-portable.zip python-portable/ 1> /dev/null
+  - curl --upload-file ./upload/mu-portable.zip https://transfer.sh/mu-portable.zip
