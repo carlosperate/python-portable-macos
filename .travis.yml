@@ -16,10 +16,16 @@ install:
   - HOMEBREW_NO_AUTO_UPDATE=1 brew install openssl
   - PROJECT_DIR="$PWD"
   - echo $PROJECT_DIR
+  - mkdir upload
 
 script:
   # Download and build Python
   - sh build_python.sh
+
+  # Compress and upload it before touching it
+  - cd "$PROJECT_DIR"
+  - zip --symlinks -r upload/python3-only.zip python-portable/ 1> /dev/null
+  - curl --upload-file ./upload/python3-only.zip https://transfer.sh/python3-only.zip
 
   # Check built Python
   - cd "$PROJECT_DIR"
@@ -29,21 +35,11 @@ script:
   - ./bin/python3.6 -c 'import ssl; print(ssl.OPENSSL_VERSION)'
   - ./bin/python3.6 -m pip --version
 
-  # Process Python build (removes unnecessary stuff)
-  - cd "$PROJECT_DIR"
-  - python process_python_build.py "$PROJECT_DIR/python-portable"
-
-  # Compress and upload it
-  - cd "$PROJECT_DIR"
-  - mkdir upload
-  - zip --symlinks -r upload/python3.6-only.zip Python-portable/ 1> /dev/null
-  - curl --upload-file ./upload/python3.6-only.zip https://transfer.sh/python3.6-only.zip
-
   # Install Mu
   - cd "$PROJECT_DIR/python-portable"
   - ./bin/python3.6 -m pip install mu-editor
 
-  # Process Python build again now that Mu and dependencies were added
+  # Process Python build with Mu into an App Bundle
   - cd "$PROJECT_DIR"
   - python process_python_build.py "$PROJECT_DIR/python-portable"
 
