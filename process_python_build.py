@@ -26,10 +26,10 @@ VERBOSE = False
 def remove_file(file_to_remove):
     if os.path.isfile(file_to_remove):
         if VERBOSE:
-            print('Removing file {}'.format(file_to_remove))
+            print('\tRemoving file {}'.format(file_to_remove))
         os.remove(file_to_remove)
     else:
-        print('File {} was not found.'.format(file_to_remove))
+        print('\tFile {} was not found.'.format(file_to_remove))
 
 
 def remove_directory(dir_to_remove):
@@ -39,10 +39,10 @@ def remove_directory(dir_to_remove):
     """
     if os.path.isdir(dir_to_remove):
         if VERBOSE:
-            print('Removing directory {}'.format(dir_to_remove))
+            print('\tRemoving directory {}'.format(dir_to_remove))
         shutil.rmtree(dir_to_remove)
     else:
-        print('Directory {} was not found.'.format(dir_to_remove))
+        print('\tDirectory {} was not found.'.format(dir_to_remove))
 
 
 def remove_file_type_from(file_extension, scan_path):
@@ -59,27 +59,26 @@ def remove_file_type_from(file_extension, scan_path):
                 remove_file(file_path)
 
 
-def compress_folder(folder_path, zip_file_path, zip_as_folder=True):
+def compress_folder(folder_path, zip_path, zip_as_folder=True):
     """
     Compresses the folder indicated by folder_path, without the a pa
     """
     folder_path = os.path.abspath(folder_path)
-    zip_file_path = os.path.abspath(zip_file_path)
-    if os.path.isfile(zip_file_path):
-        raise Exception('Destination file {} already exists.'.format(
-                zip_file_path))
+    zip_path = os.path.abspath(zip_path)
+    if os.path.isfile(zip_path):
+        raise Exception('Destination file {} already exists.'.format(zip_path))
 
     old_cwd = os.getcwd()
     parent_path = os.path.dirname(folder_path)
     if zip_as_folder:
         os.chdir(parent_path)
-        zip_folder = os.path.relpath(folder_path, parent_path)
+        path_to_zip = os.path.relpath(folder_path, parent_path)
     else:
         os.chdir(folder_path)
-        zip_folder = '.'
+        path_to_zip = '.'
 
     zip_process = subprocess.Popen(
-            ["zip", "--symlinks", "-r", zip_file_path, zip_folder],
+            ["zip", "--symlinks", "-r", zip_path, path_to_zip],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE)
     std_out, std_err = zip_process.communicate()
@@ -115,7 +114,7 @@ def compile_pyc(py_file, pyc_file):
     if os.path.isfile(pyc_file):
         raise Exception('Destination file {} already exists.'.format(pyc_file))
 
-    print('Compiling file {} to {}'.format(py_file, pyc_file))
+    print('\tCompiling file {} to {}'.format(py_file, pyc_file))
     py_compile.compile(py_file, cfile=pyc_file, doraise=True)
 
 
@@ -145,7 +144,7 @@ def get_python_path(args):
         # Take the first argument and use it as a tag appendage
         if os.path.isdir(args[0]):
             abs_path = os.path.abspath(args[0])
-            print(msg + ' will be used as python path:\n\t{}'.format(abs_path))
+            print('{} as Python path:\n\t{}'.format(msg, abs_path))
             return abs_path
         else:
             raise Exception(msg + ', but it is not a valid path')
@@ -161,14 +160,14 @@ def main(args):
     print('\nRemove unnecessary directories:')
     for dir_ in PYTHON_REMOVE_DIRS:
         full_path = os.path.join(python_path, dir_)
-        print('Removing "{}"'.format(full_path))
+        print('\tRemoving "{}"'.format(full_path))
         remove_directory(full_path)
 
     print('\nRemove __pycache__ directories from "{}"'.format(std_lib_path))
     remove_pycache_dirs(std_lib_path)
 
     print('\nCompile Python files from "{}"'.format(std_lib_path))
-    compile_pyc_dir(python_exec_path, std_lib_path)
+    compile_pyc_dir(python_exec_path=python_exec_path, src_path=std_lib_path)
 
     print('\nRemove Python source files from "{}"'.format(std_lib_path))
     remove_file_type_from('py', std_lib_path)
@@ -184,7 +183,7 @@ def main(args):
     # print('\nRemove uncompressed stand library dir"{}"'.format(std_lib_path))
     # remove_directory(std_lib_path)
 
-    print('All done! :)')
+    print('\nAll done! :)')
 
 
 if __name__ == "__main__":

@@ -47,7 +47,11 @@ script:
   - cd "$PROJECT_DIR"
   - python process_python_build.py "$PROJECT_DIR/python-portable"
 
-  # Compress and upload it
+  # Create an App Bundle and compressed zip for the application
   - cd "$PROJECT_DIR"
-  - zip --symlinks -r upload/mu-portable.zip python-portable/ 1> /dev/null
+  - python create_app_bundle.py "$PROJECT_DIR/python-portable" "Mu"
+  - mv "$PROJECT_DIR/mu-portable.zip" "$PROJECT_DIR/upload/mu-portable.zip"
+
+  # Upload zipped App Bundle
+  - cd "$PROJECT_DIR"
   - curl --upload-file ./upload/mu-portable.zip https://transfer.sh/mu-portable.zip
