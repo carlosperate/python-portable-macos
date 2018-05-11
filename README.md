@@ -6,13 +6,15 @@ An attempt to make a portable version of Python for macOS in order to pack Pytho
 
 Includes scripts to build Python and package it into a Mac Application Bundle.
 
-Travis CI is used to build and package it, output files are temporary stored  (only for two weeks) in the wonderful https://transfer.sh service. To download individual commits you need to find the unique transfer.sh URL inside the Travis build log. I.e., search for the following [line](https://travis-ci.org/carlosperate/python-portable-macos/builds/377627811#L8975):
+Travis CI is used to build and package it, output files are temporary stored (only for two weeks) in the wonderful https://transfer.sh service. To download individual commits you need to find the unique transfer.sh URL at the end of the Travis build log:
 
 ```bash
-$ curl --upload-file ./upload/mu-portable.zip https://transfer.sh/mu-portable.zip
-https://transfer.sh/xpZFx/mu-portable.zip
+$ cat output_urls.txt
+https://transfer.sh/i3e5C/python3-only.zip
+https://transfer.sh/jYQeu/python3-only-reduced.zip
+https://transfer.sh/kkx05/mu-portable.zip
 
-The command "curl --upload-file ./upload/mu-portable.zip https://transfer.sh/mu-portable.zip" exited with 0.
+The command "cat output_urls.txt" exited with 0.
 ```
 
 
