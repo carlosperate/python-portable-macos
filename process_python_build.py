@@ -10,17 +10,28 @@ import subprocess
 import py_compile
 
 
-# Python version is used for folder names and exec files in built output
-PYTHON_VER = 'python3.6'
+VERBOSE = False
 
-# Safe directories we can remove from a Python build folder
+# Python version is used for folder names and exec files in built output
+VERSION_STR = '3.6'
+PYTHON_VER = 'python{}'.format(VERSION_STR)
+
+# Set the files and directories we can remove from a Python build folder
 PYTHON_REMOVE_DIRS = [
+    os.path.join('share', 'man'),
     os.path.join('lib', PYTHON_VER, 'ensurepip'),
     os.path.join('lib', PYTHON_VER, 'idlelib'),
     os.path.join('lib', PYTHON_VER, 'test'),
 ]
-
-VERBOSE = False
+PYTHON_REMOVE_FILES = [
+    #os.path.join('lib', PYTHON_VER, 'ensurepip'),
+    #os.path.join('bin', '{}m'.format(PYTHON_VER)),
+]
+# Files and folders to keep inside the bin folder
+PYTHON_KEEP_BIN_ITEMS = [
+    PYTHON_VER,
+    'pip{}'.format(VERSION_STR),
+]
 
 
 def remove_file(file_to_remove):
@@ -57,6 +68,20 @@ def remove_file_type_from(file_extension, scan_path):
             if file_.endswith('.' + file_extension):
                 file_path = os.path.join(root, file_)
                 remove_file(file_path)
+
+
+def remove_all_folder_items_except(items_to_exclude, scan_path):
+    """
+    Goes through a directory immediate child files and folders and remove all
+    except those indicated in the items_to_exclude argument.
+    The items_to_exclude list MUST NOT contain full paths, just file/folder
+    names.
+    """
+    scan_path = os.path.abspath(scan_path)
+    for entry_name in os.listdir(scan_path):
+        full_path = os.path.join(scan_path, entry_name)
+        if os.path.exists(full_path) and entry_name not in items_to_exclude:
+            remove_file(full_path)
 
 
 def compress_folder(folder_path, zip_path, zip_as_folder=True):
@@ -155,6 +180,7 @@ def get_python_path(args):
 def main(args):
     python_path = get_python_path(args)
     std_lib_path = os.path.join(python_path, 'lib', PYTHON_VER)
+    bin_path = os.path.join(python_path, 'bin')
     python_exec_path = os.path.join(python_path, 'bin', PYTHON_VER)
 
     print('\nRemove unnecessary directories:')
@@ -162,6 +188,13 @@ def main(args):
         full_path = os.path.join(python_path, dir_)
         print('\tRemoving "{}"'.format(full_path))
         remove_directory(full_path)
+
+    print('\nRemove unnecessary files:')
+    for file_ in PYTHON_REMOVE_FILES:
+        full_path = os.path.join(python_path, file_)
+        print('\tRemoving "{}"'.format(full_path))
+        remove_file(full_path)
+    remove_all_folder_items_except(PYTHON_KEEP_BIN_ITEMS, bin_path)
 
     print('\nRemove __pycache__ directories from "{}"'.format(std_lib_path))
     remove_pycache_dirs(std_lib_path)
