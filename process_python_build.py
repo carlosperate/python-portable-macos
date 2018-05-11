@@ -27,6 +27,7 @@ PYTHON_REMOVE_FILES = [
     #os.path.join('lib', PYTHON_VER, 'ensurepip'),
     #os.path.join('bin', '{}m'.format(PYTHON_VER)),
 ]
+
 # Files and folders to keep inside the bin folder
 PYTHON_KEEP_BIN_ITEMS = [
     PYTHON_VER,
@@ -35,6 +36,10 @@ PYTHON_KEEP_BIN_ITEMS = [
 
 
 def remove_file(file_to_remove):
+    """
+    Removes the given file if it exists, print info out if not.
+    :param file_to_remove: Path to file to remove.
+    """
     if os.path.isfile(file_to_remove):
         if VERBOSE:
             print('\tRemoving file {}'.format(file_to_remove))
@@ -182,30 +187,34 @@ def main(args):
     std_lib_path = os.path.join(python_path, 'lib', PYTHON_VER)
     bin_path = os.path.join(python_path, 'bin')
     python_exec_path = os.path.join(python_path, 'bin', PYTHON_VER)
+    global VERBOSE
 
-    print('\nRemove unnecessary directories:')
+    print('Remove unnecessary directories:')
+    VERBOSE = True
     for dir_ in PYTHON_REMOVE_DIRS:
         full_path = os.path.join(python_path, dir_)
-        print('\tRemoving "{}"'.format(full_path))
         remove_directory(full_path)
+    VERBOSE = False
 
-    print('\nRemove unnecessary files:')
+    print('Remove unnecessary files:')
+    VERBOSE = True
     for file_ in PYTHON_REMOVE_FILES:
         full_path = os.path.join(python_path, file_)
         print('\tRemoving "{}"'.format(full_path))
         remove_file(full_path)
     remove_all_folder_items_except(PYTHON_KEEP_BIN_ITEMS, bin_path)
+    VERBOSE = False
 
-    print('\nRemove __pycache__ directories from "{}"'.format(std_lib_path))
+    print('Remove __pycache__ directories from "{}"'.format(std_lib_path))
     remove_pycache_dirs(std_lib_path)
 
-    print('\nCompile Python files from "{}"'.format(std_lib_path))
+    print('Compile Python files from "{}"'.format(std_lib_path))
     compile_pyc_dir(python_exec_path=python_exec_path, src_path=std_lib_path)
 
-    print('\nRemove Python source files from "{}"'.format(std_lib_path))
+    print('Remove Python source files from "{}"'.format(std_lib_path))
     remove_file_type_from('py', std_lib_path)
 
-    print('\nRemove __pycache__ directories from "{}"'.format(std_lib_path))
+    print('Remove __pycache__ directories from "{}"'.format(std_lib_path))
     remove_pycache_dirs(std_lib_path)
 
     # TODO: Figure out compressing issue and if it's worth doing
