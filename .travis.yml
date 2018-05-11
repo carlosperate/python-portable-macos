@@ -25,7 +25,7 @@ script:
   # Compress and upload it before touching it
   - cd "$PROJECT_DIR"
   - zip --symlinks -r upload/python3-only.zip python-portable/ 1> /dev/null
-  - curl --upload-file ./upload/python3-only.zip https://transfer.sh/python3-only.zip | tee -a output_urls.txt
+  - curl --upload-file ./upload/python3-only.zip https://transfer.sh/python3-only.zip | tee -a output_urls.txt && echo "" >> output_urls.txt
 
   # Check built Python
   - cd "$PROJECT_DIR"
@@ -39,7 +39,7 @@ script:
   - cd "$PROJECT_DIR"
   - python process_python_build.py "$PROJECT_DIR/python-portable"
   - zip --symlinks -r upload/python3-only-reduced.zip python-portable/ 1> /dev/null
-  - curl --upload-file ./upload/python3-only-reduced.zip https://transfer.sh/python3-only-reduced.zip | tee -a output_urls.txt
+  - curl --upload-file ./upload/python3-only-reduced.zip https://transfer.sh/python3-only-reduced.zip | tee -a output_urls.txt && echo "" >> output_urls.txt
 
   # Install Mu
   - cd "$PROJECT_DIR/python-portable"
