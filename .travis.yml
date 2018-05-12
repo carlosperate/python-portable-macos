@@ -20,6 +20,7 @@ install:
 
 script:
   # Download and build Python
+  - cd "$PROJECT_DIR"
   - sh build_python.sh
 
   # Compress and upload it before touching it
@@ -56,7 +57,27 @@ script:
 
   # Upload zipped App Bundle
   - cd "$PROJECT_DIR"
-  - curl --upload-file ./upload/mu-portable.zip https://transfer.sh/mu-portable.zip | tee -a output_urls.txt
+  - curl --upload-file ./upload/mu-portable.zip https://transfer.sh/mu-portable.zip | tee -a output_urls.txt && echo "" >> output_urls.txt
+  
+  # Create a DMG package and upload it
+  - cd "$PROJECT_DIR"
+  - git clone https://github.com/andreyvit/yoursway-create-dmg.git
+  - cd yoursway-create-dmg
+  # TODO: Create background and add it with "--background "installer_background.png""
+  - |
+    ./create-dmg \
+    --volname "Mu Installer" \
+    --volicon "$PROJECT_DIR/app_bundle/appIcon.icns" \
+    --window-pos 200 120 \
+    --window-size 800 400 \
+    --icon-size 100 \
+    --icon Application.app 200 190 \
+    --hide-extension Mu.app \
+    --app-drop-link 600 185 \
+    "$PROJECT_DIR/upload/Mu-Installer.dmg" \
+    "$PROJECT_DIR/Mu.app/"
+  - curl --upload-file "$PROJECT_DIR/upload/Mu-Installer.dmg" https://transfer.sh/Mu-Installer.dmg | tee -a output_urls.txt
 
   # Print all uploaded files URLs
+  - cd "$PROJECT_DIR"
   - cat output_urls.txt

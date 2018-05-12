@@ -27,3 +27,4 @@ The command "cat output_urls.txt" exited with 0.
 - [ ] Test in older macOS versions than 10.13 High Sierra
 - [ ] Test in 10.9 Mavericks (Compile flag for 10.9, Travis environment uses 10.10 Yosemite)
 - [ ] Simple PyQt5 test works, Mu fails to open, likely an exception is raised, so need to investigate
+- [ ] Create a background PNG image for the DMG folder
