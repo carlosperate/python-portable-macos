@@ -63,7 +63,7 @@ script:
   - cd "$PROJECT_DIR"
   - git clone https://github.com/andreyvit/yoursway-create-dmg.git
   - cd yoursway-create-dmg
-  #--background "installer_background.png" \
+  # TODO: Create background and add it with "--background "installer_background.png""
   - |
     ./create-dmg \
     --volname "Mu Installer" \
@@ -74,10 +74,10 @@ script:
     --icon Application.app 200 190 \
     --hide-extension Mu.app \
     --app-drop-link 600 185 \
-    "$PROJECT_DIR/Mu-Installer.dmg" \
+    "$PROJECT_DIR/upload/Mu-Installer.dmg" \
     "$PROJECT_DIR/Mu.app/"
-  - cd "$PROJECT_DIR"
-  - curl --upload-file ./Mu-Installer.dmg https://transfer.sh/Mu-Installer.dmg.zip | tee -a output_urls.tx
+  - curl --upload-file "$PROJECT_DIR/upload/Mu-Installer.dmg" https://transfer.sh/Mu-Installer.dmg | tee -a output_urls.txt
 
   # Print all uploaded files URLs
+  - cd "$PROJECT_DIR"
   - cat output_urls.txt
