@@ -43,20 +43,19 @@ script:
   - curl --upload-file ./upload/python3-only-reduced.zip https://transfer.sh/python3-only-reduced.zip | tee -a output_urls.txt && echo "" >> output_urls.txt
 
   # Install Mu
-  - cd "$PROJECT_DIR/python-portable"
-  - ./bin/python3.6 -m pip install mu-editor
+  - cd "$PROJECT_DIR"
+  - git clone https://github.com/mu-editor/mu.git
+  - cd mu
+  - "./$PROJECT_DIR/python-portable/bin/python3.6" -m pip install .
 
   # Process Python build with Mu into an App Bundle
   - cd "$PROJECT_DIR"
   - python process_python_build.py "$PROJECT_DIR/python-portable"
 
-  # Create an App Bundle and compressed zip for the application
+  # Create an App Bundle and zipped version to upload
   - cd "$PROJECT_DIR"
   - python create_app_bundle.py "$PROJECT_DIR/python-portable" "Mu"
   - mv "$PROJECT_DIR/mu-portable.zip" "$PROJECT_DIR/upload/mu-portable.zip"
-
-  # Upload zipped App Bundle
-  - cd "$PROJECT_DIR"
   - curl --upload-file ./upload/mu-portable.zip https://transfer.sh/mu-portable.zip | tee -a output_urls.txt && echo "" >> output_urls.txt
   
   # Create a DMG package and upload it
