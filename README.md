@@ -10,9 +10,10 @@ Travis CI is used to build and package it, output files are temporary stored (on
 
 ```bash
 $ cat output_urls.txt
-https://transfer.sh/i3e5C/python3-only.zip
-https://transfer.sh/jYQeu/python3-only-reduced.zip
-https://transfer.sh/kkx05/mu-portable.zip
+https://transfer.sh/K3Hef/python3-only.zip
+https://transfer.sh/4wYXQ/python3-only-reduced.zip
+https://transfer.sh/xuxaL/mu-portable.zip
+https://transfer.sh/LOoqY/Mu-Installer.dmg
 
 The command "cat output_urls.txt" exited with 0.
 ```
