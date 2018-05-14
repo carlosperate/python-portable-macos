@@ -8,5 +8,5 @@ echo $RESOURCES_DIR
 # Add to the top of Path the Python bin
 PATH="$RESOURCES_DIR/python-portable/bin/:$PATH"
 
-#"$RESOURCES_DIR/python-portable/bin/python3.6" -m mu
-"$RESOURCES_DIR/python-portable/bin/python3.6" "$RESOURCES_DIR/pyqt_test.py"
+"$RESOURCES_DIR/python-portable/bin/python3.6" -m mu
+#"$RESOURCES_DIR/python-portable/bin/python3.6" "$RESOURCES_DIR/pyqt_test.py"

@@ -42,9 +42,9 @@ script:
   - zip --symlinks -r upload/python3-only-reduced.zip python-portable/ 1> /dev/null
   - curl --upload-file ./upload/python3-only-reduced.zip https://transfer.sh/python3-only-reduced.zip | tee -a output_urls.txt && echo "" >> output_urls.txt
 
-  # Install Mu from master branch
+  # Install Mu from PR branch
   - cd "$PROJECT_DIR"
-  - git clone https://github.com/mu-editor/mu.git
+  - git clone -b invalid_locale https://github.com/mu-editor/mu.git
   - cd mu
   - "./$PROJECT_DIR/python-portable/bin/python3.6" -m pip install .
 
